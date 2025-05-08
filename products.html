@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>DolledUp - Προϊόντα</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&family=Playfair+Display&display=swap" rel="stylesheet">
 </head>
 <body>
 
+  <header>
+    <div class="logo">
+        <img src="images/logo3.png" alt="Eshop Logo">
+        DolledUp
+    </div>
+    <nav>
+      <a href="homepage.html">Αρχική</a>
+      <a href="products.html">Προϊόντα</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+    <div class="simple-search-bar">
+        <input type="text" placeholder="Αναζήτηση προϊόντος...">
+        <button type="submit">Αναζήτηση</button>
+      </div>
+      </section>
+
+
+    <section class="product-list" id="productList">
+      <!-- Εδώ θα εμφανίζονται τα προϊόντα με JS -->
+      <div class="product">
+        <img src="images/mascara.jpg" alt="Mascara GlowUp">
+        <h3>Sumptuous Extreme Lash Multiplying Volume Mascara</h3>
+        <p>Η Extreme δημιουργεί εξωπραγματικό όγκο, ανορθώνει και 'γυρνάει' τις βλεφαρίδες για τολμηρό
+            αποτέλεσμα ψεύτικων βλεφαρίδων.</p>
+      </div>
+      <div class="product">
+        <img src="images/lipstick.jpg" alt="Lipstick Velvet">
+        <h3>SuperStay Vinyl Ink Υγρό Κραγιόν</h3>
+        <p>Νέο SuperStay Vinyl Ink υγρό κραγιόν από τη Maybelline New York!</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Ομάδα: Βρεττού Μαρία, Αλίκη Παπαδοπούλου, Κωνσταντίνα Βέλου, Αθηνά-Ανδριάνα Βλαχοπούλου
+  </footer>
+
+  <script src="js/products.js"></script>
 </body>
 </html>
