@@ -1,0 +1,141 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "E-Shop API",
+    "description": "API για το E-Shop frontend",
+    "version": "1.0.0"
+  },
+  "host": "127.0.0.1:5000",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/search": {
+      "get": {
+        "summary": "Αναζήτηση προϊόντων",
+        "description": "Αναζήτηση προϊόντων με βάση το όνομα",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "Το όνομα του προϊόντος"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Λίστα προϊόντων"
+          }
+        }
+      }
+    },
+    "/like": {
+      "post": {
+        "summary": "Like σε προϊόν",
+        "description": "Αυξάνει τα likes ενός προϊόντος",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string"
+                }
+              },
+              "required": ["product_id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Το προϊόν πήρε like"
+          },
+          "400": {
+            "description": "Λάθος αίτημα"
+          },
+          "404": {
+            "description": "Το προϊόν δεν βρέθηκε"
+          }
+        }
+      }
+    },
+    "/popular-products": {
+      "get": {
+        "summary": "Top 5 προϊόντα",
+        "description": "Επιστρέφει τα πιο δημοφιλή προϊόντα βάσει likes",
+        "responses": {
+          "200": {
+            "description": "Επιστροφή προϊόντων"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "Λήψη όλων των προϊόντων",
+        "description": "Επιστρέφει όλα τα διαθέσιμα προϊόντα",
+        "responses": {
+          "200": {
+            "description": "Λίστα προϊόντων"
+          }
+        }
+      }
+    },
+    "/product/{id}": {
+      "get": {
+        "summary": "Λήψη προϊόντος με ID",
+        "description": "Επιστρέφει ένα προϊόν με βάση το ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Το MongoDB ID του προϊόντος"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Επιστροφή προϊόντος"
+          },
+          "404": {
+            "description": "Το προϊόν δεν βρέθηκε"
+          }
+        }
+      }
+    },
+    "/add-product": {
+      "post": {
+        "summary": "Προσθήκη νέου προϊόντος",
+        "description": "Δημιουργεί νέο προϊόν στο κατάστημα",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "price": { "type": "number" },
+                "likes": { "type": "integer" }
+              },
+              "required": ["name", "price"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Το προϊόν δημιουργήθηκε"
+          },
+          "400": {
+            "description": "Λανθασμένα δεδομένα"
+          }
+        }
+      }
+    }
+  }
+}

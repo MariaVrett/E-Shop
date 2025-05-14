@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Popular Products</title>
+  <style>
+    .product {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      max-width: 300px;
+    }
+    img {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Δημοφιλή Προϊόντα</h1>
+  {% for product in products %}
+    <div class="product">
+      <h2>{{ product.name }}</h2>
+      <img src="{{ product.image }}" alt="product image">
+      <p>{{ product.description }}</p>
+      <p><strong>Τιμή:</strong> {{ product.price }} €</p>
+      <p>Likes: {{ product.likes }}</p>
+    </div>
+  {% endfor %}
+</body>
+</html>
