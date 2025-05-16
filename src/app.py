@@ -1,14 +1,21 @@
 import logging
 import json
+import os
 
 from flask import Flask, request, jsonify
+from flask import render_template
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from bson import ObjectId
 from bson.errors import InvalidId
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # αυτός είναι ο φάκελος src
+TEMPLATE_DIR = os.path.join(BASE_DIR, '..', 'web', 'templates')  # ένα επίπεδο πάνω, μετά web/templates
+STATIC_DIR = os.path.join(BASE_DIR, '..', 'web', 'static')
+
+app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
+
 CORS(app)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/e_shopDB"
 mongo = PyMongo(app)
@@ -24,6 +31,15 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 )
 
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+@app.route('/')
+def home_page():
+    return render_template('homepage.html')
+
+@app.route('/products')
+def products_page():
+    return render_template('products.html')
+
 
 @app.route('/swagger.json')
 def swagger_json():
