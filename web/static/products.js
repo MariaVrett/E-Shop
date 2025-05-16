@@ -3,46 +3,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchButton = document.querySelector('.simple-search-bar button');
     const productList = document.getElementById('productList');
 
-    // ➤ Φόρτωσε τα πιο δημοφιλή προϊόντα μόλις φορτώσει η σελίδα
-    fetchPopularProducts();
+    // Φόρτωσε όλα τα προϊόντα κατά την αρχική φόρτωση της σελίδας
+    fetchProducts("");
 
-    // ➤ Αναζήτηση με Enter
+    // Υποστήριξη Enter για αναζήτηση
     searchInput.addEventListener("keypress", function (e) {
         if (e.key === "Enter") {
             searchButton.click();
         }
     });
 
-    // ➤ Αναζήτηση με click
     searchButton.addEventListener("click", () => {
         const query = searchInput.value.trim();
-        if (query) {
-            fetchSearchResults(query);
-        }
+        fetchProducts(query);
     });
 
-    async function fetchPopularProducts() {
+    async function fetchProducts(query) {
         try {
-            const response = await fetch('http://127.0.0.1:5000/popular-products');
-            const products = await response.json();
-            displayProducts(products);
-        } catch (error) {
-            console.error("Σφάλμα κατά τη φόρτωση δημοφιλών προϊόντων:", error);
-        }
-    }
+            const url = query
+                ? `http://127.0.0.1:5000/search?name=${encodeURIComponent(query)}`
+                : `http://127.0.0.1:5000/search`; // Χωρίς query: όλα τα προϊόντα
 
-    async function fetchSearchResults(query) {
-        try {
-            const response = await fetch(`http://127.0.0.1:5000/search?name=${encodeURIComponent(query)}`);
+            const response = await fetch(url);
             const products = await response.json();
             displayProducts(products);
         } catch (error) {
-            console.error("Σφάλμα στην αναζήτηση:", error);
+            console.error("Σφάλμα κατά τη φόρτωση προϊόντων:", error);
         }
     }
 
     function displayProducts(products) {
-        productList.innerHTML = ''; // Καθαρισμός
+        productList.innerHTML = ''; // Καθαρισμός παλιών προϊόντων
 
         if (!products.length) {
             productList.innerHTML = '<p>Δεν βρέθηκαν προϊόντα.</p>';
@@ -54,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             div.className = 'product';
 
             const img = document.createElement('img');
-            img.src = '/static/' + product.image.replace(/^\/+/, '');
+            img.src = '/static/' + product.image.replace(/^\/+/, ''); // αφαίρεσε αρχικά "/"
             img.alt = product.name;
             img.style.cursor = "pointer";
 
@@ -68,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
             likes.textContent = `Likes: ${product.likes || 0}`;
             likes.className = 'likes-count';
 
-            // ➤ Like με click
+            // Like με click στην εικόνα
             img.addEventListener("click", async () => {
                 try {
                     const res = await fetch('http://127.0.0.1:5000/like', {
@@ -84,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         product.likes += 1;
                         likes.textContent = `Likes: ${product.likes}`;
                     } else {
-                        console.error("Σφάλμα Like:", result.error);
+                        console.error("Σφάλμα κατά το Like:", result.error);
                     }
                 } catch (err) {
                     console.error("Like error:", err);
