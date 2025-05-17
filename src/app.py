@@ -48,24 +48,24 @@ def swagger_json():
     return jsonify(data)
 
 
-# Product search
 @app.route("/search", methods=["GET"])
 def search_products():
     name = request.args.get("name", "").strip()
-
     query = {}
+
     if name:
-        if " " in name:
-            query = {"name": name}
-        else:
-            query = {"$text": {"$search": name}}
+        query = {
+            "$or": [
+                {"name": {"$regex": name, "$options": "i"}},
+                {"description": {"$regex": name, "$options": "i"}}
+            ]
+        }
 
     products = mongo.db.products.find(query).sort("price", -1)
-    
+
     result = []
     for product in products:
-        product["_id"] = str(product["_id"])  # μετατροπή ObjectId σε string
-
+        product["_id"] = str(product["_id"])
         result.append(product)
 
     return jsonify(result)
