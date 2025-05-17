@@ -18,6 +18,12 @@ document.addEventListener("DOMContentLoaded", function () {
         fetchProducts(query);
     });
 
+    searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim();
+    fetchProducts(query);
+});
+
+
     async function fetchProducts(query) {
         try {
             const url = query
