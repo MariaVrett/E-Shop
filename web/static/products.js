@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.querySelector('.simple-search-bar input');
     const searchButton = document.querySelector('.simple-search-bar button');
     const productList = document.getElementById('productList');
+    const API_BASE = "http://127.0.0.1:5000";
+    const cache = new Map(); // προαιρετικό caching
+
 
     // Φόρτωσε όλα τα προϊόντα κατά την αρχική φόρτωση της σελίδας
     fetchProducts("");
@@ -13,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    //Πλήκτρο αναζήτησης
     searchButton.addEventListener("click", () => {
         const query = searchInput.value.trim();
         fetchProducts(query);
@@ -25,13 +29,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     async function fetchProducts(query) {
+        productList.innerHTML = '<p>Φόρτωση προϊόντων...</p>';
+
+        if (cache.has(query)) {
+            return renderProducts(cache.get(query), query);
+        }
+
         try {
             const url = query
-                ? `http://127.0.0.1:5000/search?name=${encodeURIComponent(query)}`
-                : `http://127.0.0.1:5000/search`; // Χωρίς query: όλα τα προϊόντα
+                ? `${API_BASE}/search?name=${encodeURIComponent(query)}`
+                : `${API_BASE}/search`; // Χωρίς query: όλα τα προϊόντα
 
             const response = await fetch(url);
             const products = await response.json();
+
             displayProducts(products);
         } catch (error) {
             console.error("Σφάλμα κατά τη φόρτωση προϊόντων:", error);
@@ -56,10 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
             img.style.cursor = "pointer";
 
             const title = document.createElement('h3');
-            title.textContent = product.name;
+            title.innerHTML = highlight(product.name, searchInput.value.trim());
 
             const desc = document.createElement('p');
-            desc.textContent = product.description;
+            desc.innerHTML = highlight(product.description, searchInput.value.trim());
 
             const likes = document.createElement('p');
             likes.textContent = `Likes: ${product.likes || 0}`;
@@ -68,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Like με click στην εικόνα
             img.addEventListener("click", async () => {
                 try {
-                    const res = await fetch('http://127.0.0.1:5000/like', {
+                    const res = await fetch(`${API_BASE}/like`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -95,5 +106,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             productList.appendChild(div);
         });
+    }
+
+    function highlight(text, query) {
+        if (!query) return text;
+
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); //Αποφυγή ειδικών χαρακτήρων
+        const regex = new RegExp(`(${escapedQuery})`, 'gi');
+        return text.replace(regex, '<mark>$1</mark>');
     }
 });
