@@ -175,3 +175,10 @@ h1 {
         opacity: 0;
     }
 }
+
+mark {
+  background-color: #f9d0d0 !important;
+  color: black;
+  border-radius: 2px;
+}
+
