@@ -55,11 +55,18 @@ document.addEventListener("DOMContentLoaded", function () {
         img.style.cursor = "pointer";
 
         const title = document.createElement('h3');
-        title.textContent = product.name;
+        title.innerHTML = highlight(product.name, searchInput.value.trim());
 
         const desc = document.createElement('p');
-        desc.textContent = product.description;
+        desc.innerHTML = highlight(product.description, searchInput.value.trim());
         desc.className = 'description';
+
+        function highlight(text, query) {
+            if (!query) return text;
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); //Αποφυγή ειδικών χαρακτήρων
+            const regex = new RegExp(`(${escapedQuery})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        }
 
         const productContent = document.createElement('div');
         productContent.className = 'product-content';
