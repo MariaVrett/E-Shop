@@ -6,16 +6,18 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Lato&family=Playfair+Display&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="products-page">
 
   <header>
     <div class="logo">
-        <img src="{{ url_for('static', filename='images/logo3.png') }}" alt="Eshop Logo">
+        <img src="{{ url_for('static', filename='images/logo3.png') }}" alt="Λογότυπο DolledUp">
         DolledUp
     </div>
     <nav>
-      <a href="{{ url_for('home_page') }}">Αρχική</a>
-      <a href="{{ url_for('products_page') }}">Προϊόντα</a>
+        <ul>
+            <li><a href="{{ url_for('home_page') }}">Αρχική</a></li>
+            <li><a href="{{ url_for('products_page') }}">Προϊόντα</a></li>
+        </ul>
     </nav>
   </header>
 
@@ -28,11 +30,12 @@
     </section>
 
     <section class="product-list" id="productList">
+      <!-- Εδώ φορτώνονται τα προϊόντα δυναμικά -->
     </section>
   </main>
 
   <footer>
-    Ομάδα: Βρεττού Μαρία, Αλίκη Παπαδοπούλου, Κωνσταντίνα Βέλου, Αθηνά-Ανδριάνα Βλαχοπούλου
+    <p>Ομάδα: Βρεττού Μαρία, Αλίκη Παπαδοπούλου, Κωνσταντίνα Βέλου, Αθηνά-Ανδριάνα Βλαχοπούλου</p>
   </footer>
 
   <script src="{{ url_for('static', filename='products.js') }}"></script>

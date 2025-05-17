@@ -19,16 +19,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     searchInput.addEventListener("input", () => {
-    const query = searchInput.value.trim();
-    fetchProducts(query);
-});
-
+        const query = searchInput.value.trim();
+        fetchProducts(query);
+    });
 
     async function fetchProducts(query) {
         try {
             const url = query
                 ? `http://127.0.0.1:5000/search?name=${encodeURIComponent(query)}`
-                : `http://127.0.0.1:5000/search`; // Χωρίς query: όλα τα προϊόντα
+                : `http://127.0.0.1:5000/search`;
 
             const response = await fetch(url);
             const products = await response.json();
@@ -39,61 +38,77 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function displayProducts(products) {
-        productList.innerHTML = ''; // Καθαρισμός παλιών προϊόντων
+    productList.innerHTML = ''; // Καθαρισμός παλιών προϊόντων
 
-        if (!products.length) {
-            productList.innerHTML = '<p>Δεν βρέθηκαν προϊόντα.</p>';
-            return;
-        }
-
-        products.forEach(product => {
-            const div = document.createElement('div');
-            div.className = 'product';
-
-            const img = document.createElement('img');
-            img.src = '/static/' + product.image.replace(/^\/+/, ''); // αφαίρεσε αρχικά "/"
-            img.alt = product.name;
-            img.style.cursor = "pointer";
-
-            const title = document.createElement('h3');
-            title.textContent = product.name;
-
-            const desc = document.createElement('p');
-            desc.textContent = product.description;
-
-            const likes = document.createElement('p');
-            likes.textContent = `Likes: ${product.likes || 0}`;
-            likes.className = 'likes-count';
-
-            // Like με click στην εικόνα
-            img.addEventListener("click", async () => {
-                try {
-                    const res = await fetch('http://127.0.0.1:5000/like', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ product_id: product._id })
-                    });
-
-                    const result = await res.json();
-                    if (res.ok) {
-                        product.likes += 1;
-                        likes.textContent = `Likes: ${product.likes}`;
-                    } else {
-                        console.error("Σφάλμα κατά το Like:", result.error);
-                    }
-                } catch (err) {
-                    console.error("Like error:", err);
-                }
-            });
-
-            div.appendChild(img);
-            div.appendChild(title);
-            div.appendChild(desc);
-            div.appendChild(likes);
-
-            productList.appendChild(div);
-        });
+    if (!products.length) {
+        productList.innerHTML = '<p>Δεν βρέθηκαν προϊόντα.</p>';
+        return;
     }
+
+    products.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'product';
+
+        const img = document.createElement('img');
+        img.src = '/static/' + product.image.replace(/^\/+/, '');
+        img.alt = product.name;
+        img.style.cursor = "pointer";
+
+        const title = document.createElement('h3');
+        title.textContent = product.name;
+
+        const desc = document.createElement('p');
+        desc.textContent = product.description;
+        desc.className = 'description';
+
+        const productContent = document.createElement('div');
+        productContent.className = 'product-content';
+        productContent.appendChild(img);
+        productContent.appendChild(title);
+        productContent.appendChild(desc);
+
+        const bottomInfo = document.createElement('div');
+        bottomInfo.className = 'bottom-info';
+
+        const likes = document.createElement('p');
+        likes.textContent = `Likes: ${product.likes || 0}`;
+        likes.className = 'likes-count';
+
+        const price = document.createElement('p');
+        price.textContent = `${product.price?.toFixed(2) || '0.00'} €`;
+        price.className = 'price';
+
+        bottomInfo.appendChild(likes);
+        bottomInfo.appendChild(price);
+
+        div.appendChild(productContent);
+        div.appendChild(bottomInfo);
+
+        // Like click
+        img.addEventListener("click", async () => {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/like', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ product_id: product._id })
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    product.likes += 1;
+                    likes.textContent = `Likes: ${product.likes}`;
+                } else {
+                    console.error("Σφάλμα κατά το Like:", result.error);
+                }
+            } catch (err) {
+                console.error("Like error:", err);
+            }
+        });
+
+        productList.appendChild(div);
+    });
+}
+
 });
