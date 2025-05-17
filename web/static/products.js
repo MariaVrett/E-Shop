@@ -29,8 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     async function fetchProducts(query) {
-        productList.innerHTML = '<p>Φόρτωση προϊόντων...</p>';
-
         if (cache.has(query)) {
             return renderProducts(cache.get(query), query);
         }
